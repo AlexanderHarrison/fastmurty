@@ -102,9 +102,6 @@ int da(inputmatrixtype c, int nrow_priors, bool* row_priors, double* row_prior_w
 		}
 		return 0;
 	}
-	for (j=0; j < K*(m+n)*2; j++){
-	    out_assocs[j] = -2;
-	}
 
 	// prep variables
 	subproblemsize = sizeofSubproblemData(m, n);
@@ -200,24 +197,10 @@ int da(inputmatrixtype c, int nrow_priors, bool* row_priors, double* row_prior_w
         // copy solution to output
         out_costs[k] = bestsol.key;
         bestprb = bestsol.val;
-        rowidx = k*(m+n)*2;
-		for(j=0; j<n; j++){
-		    i = bestprb->solution.y[j];
-            if (i==-1){ // unmatched measurements first
-                out_assocs[rowidx] = -1;
-                rowidx++;
-                out_assocs[rowidx] = j;
-                rowidx++;
-            }
-        }
+        rowidx = k*m;
         for(i=0; i<m; i++){
             j = bestprb->solution.x[i];
-            if (j!=-2){
-                out_assocs[rowidx] = i;
-                rowidx++;
-                out_assocs[rowidx] = j;
-                rowidx++;
-            }
+            out_assocs[rowidx+i] = j;
         }
         if(Qsize == 0) break;
 
